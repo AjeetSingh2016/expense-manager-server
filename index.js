@@ -20,7 +20,7 @@ mongoose.connect(url, {
 const User = require('./models/User');
 
 // Middleware to parse JSON bodies
-app.use(bodyParser.json());
+app.use(express.json());
 
 
 

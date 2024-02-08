@@ -1,4 +1,6 @@
 const express = require('express');
+
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -18,7 +20,7 @@ mongoose.connect(url, {
 const User = require('./models/User');
 
 // Middleware to parse JSON bodies
-app.use(express.json());
+app.use(bodyParser.json());
 
 
 

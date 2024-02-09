@@ -26,7 +26,7 @@ app.use(express.json());
 
   app.post('/register', async (req, res) => {
     try {
-      const { username, email} = req.body;
+      const { username, email, photoUrl} = req.body;
       
       // Check if user already exists
       const existingUser = await User.findOne({ email });
@@ -35,7 +35,7 @@ app.use(express.json());
       }
   
       // Create a new user
-      const newUser = new User({ username, email});
+      const newUser = new User({ username, email, photoUrl});
       await newUser.save();
   
       res.status(201).json({ message: 'User created successfully' });

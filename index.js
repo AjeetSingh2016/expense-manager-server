@@ -18,6 +18,7 @@ mongoose.connect(url, {
 
   // Import user model
 const User = require('./models/User');
+const Transaction = require('./models/Transaction')
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -129,3 +130,61 @@ app.put('/users/:userId/update-total-credit', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+
+
+
+// Transactions
+
+
+// Assuming you've already defined the Message model and imported it
+
+app.post('/createTransactions', async (req, res) => {
+  try {
+    // Extract the fields from the request body
+    const { userId, amount, category, date, mode, payeeName, payerName, provider, refNo, smsBody, type, note} = req.body;
+
+    // Create a new transaction object
+    const newTransaction = new Transaction({
+      user: userId,
+      amount,
+      category,
+      date,
+      mode,
+      payeeName,
+      payerName,
+      provider,
+      refNo,
+      smsBody,
+      type,
+      note
+    });
+
+    // Save the new transaction to the database
+    await newTransaction.save();
+
+    // Return success response
+    res.status(201).json({ message: 'Transaction created successfully', transaction: newTransaction });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+app.get('/getTransactions/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find all transactions for the user
+    const transactions = await Transaction.find({ user: userId });
+
+    // Return the transactions
+    res.status(200).json(transactions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+

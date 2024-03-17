@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   lastUpdate: {
     type: Date,
-    default: null
+    default: new Date(1554636310165)
   },
   totalDebitAmount: {
     type: Number,

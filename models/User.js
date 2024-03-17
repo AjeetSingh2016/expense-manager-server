@@ -17,6 +17,18 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  lastUpdate: {
+    type: Date,
+    default: null
+  },
+  totalDebitAmount: {
+    type: Number,
+    default: 0,
+  },
+  totalCreditAmount: {
+    type: Number,
+    default: 0,
   }
 });
 

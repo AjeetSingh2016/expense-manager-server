@@ -22,28 +22,56 @@ const User = require('./models/User');
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-
-
-  app.post('/register', async (req, res) => {
-    try {
-      const { username, email, photoUrl} = req.body;
-      
-      // Check if user already exists
-      const existingUser = await User.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
-      }
-  
-      // Create a new user
-      const newUser = new User({ username, email, photoUrl});
-      await newUser.save();
-  
-      res.status(201).json({ message: 'User created successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+app.post('/register', async (req, res) => {
+  try {
+    const { username, email, photoUrl, lastUpdate, totalDebitAmount, totalCreditAmount } = req.body;
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User already exists' });
     }
-  });
+
+    // Create a new user
+    const newUser = new User({ 
+      username, 
+      email, 
+      photoUrl,
+      lastUpdate, // You can include this if it's provided in the request
+      totalDebitAmount, // You can include this if it's provided in the request
+      totalCreditAmount // You can include this if it's provided in the request
+    });
+    await newUser.save();
+
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Getting users
+app.get('/users/:email', async (req, res) => {
+  try {
+    const userEmail = req.params.email;
+
+    // Find the user by email
+    const user = await User.findOne({ email: userEmail });
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Return the user
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 
 // Define routes
 app.get('/', (req, res) => {
@@ -53,4 +81,51 @@ app.get('/', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+
+
+// Update lastUpdate
+app.put('/users/:userId/update-last-update', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { lastUpdate } = req.body;
+
+    await User.findByIdAndUpdate(userId, { lastUpdate });
+
+    res.status(200).json({ message: 'Last update updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update totalDebitAmount
+app.put('/users/:userId/update-total-debit', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { totalDebitAmount } = req.body;
+
+    await User.findByIdAndUpdate(userId, { totalDebitAmount });
+
+    res.status(200).json({ message: 'Total debit amount updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update totalCreditAmount
+app.put('/users/:userId/update-total-credit', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { totalCreditAmount } = req.body;
+
+    await User.findByIdAndUpdate(userId, { totalCreditAmount });
+
+    res.status(200).json({ message: 'Total credit amount updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });

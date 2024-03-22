@@ -195,9 +195,16 @@ app.post('/createTransactions', async (req, res) => {
 app.get('/getTransactions/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
+    const transactionType = req.query.type; // Retrieve the transaction type from query parameter
 
-    // Find all transactions for the user
-    const transactions = await Transaction.find({ user: userId });
+    // Construct the query object based on the transaction type
+    const query = { user: userId };
+    if (transactionType) {
+      query.type = transactionType; // Add transaction type to the query if provided
+    }
+
+    // Find transactions based on the constructed query
+    const transactions = await Transaction.find(query);
 
     // Return the transactions
     res.status(200).json(transactions);
@@ -206,4 +213,3 @@ app.get('/getTransactions/:userId', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-

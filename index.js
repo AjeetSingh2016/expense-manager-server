@@ -131,6 +131,25 @@ app.put('/users/:userId/update-total-credit', async (req, res) => {
   }
 });
 
+app.put('/updateUser/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const fieldsToUpdate = req.body;
+
+    const user = await User.findByIdAndUpdate(userId, fieldsToUpdate, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    res.status(500).json({ error: 'There was a problem updating the user: ' + error.message });
+  }
+});
+
+
+
 
 
 
